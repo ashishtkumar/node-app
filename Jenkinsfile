@@ -12,6 +12,15 @@ pipeline {
                 // sh "docker build . -t ${IMAGE_URL_WITH_TAG}"
             }
         }
+        stage('Docker push'){
+            steps{
+                withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhubPwd')]) {
+                    sh "docker login -u ashishvkumar -p${dockerhubPwd}"
+                    docker push ashishvkumar/nodeapp:${DOCKER_TAG}
+                }
+            }
+            
+        }
         // stage('Nexus Push'){
         //     steps{
         //         withCredentials([string(credentialsId: 'nexus-pwd', variable: 'nexusPwd')]) {
