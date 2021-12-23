@@ -21,6 +21,23 @@ pipeline {
             }
             
         }
+        stage('Deploy to K8S'){
+            steps{
+                sh "chmod +x changeTag.sh"
+                sh "./changeTag.sh ${DOCKER_TAG}"
+                sshagent(['tomcat-dev']) {
+                    sh "scp -o StrictHostKeyChecking=no service.yml node-app-pod.yml jenkins@localhost:/var/lib/jenkins/node-app/" 
+                    script{
+                        try{
+                            sh "ssh jenkins@localhost:/var/lib/jenkins/node-app/ kubectl apply -f ."
+                        }catch(error){
+                            sh "ssh jenkins@localhost:/var/lib/jenkins/node-app/ kubectl create -f ."
+                        }
+                    }
+                }
+            }
+
+        }
         // stage('Nexus Push'){
         //     steps{
         //         withCredentials([string(credentialsId: 'nexus-pwd', variable: 'nexusPwd')]) {
