@@ -26,7 +26,7 @@ pipeline {
                 sh "chmod +x changeTag.sh"
                 sh "./changeTag.sh ${DOCKER_TAG}"
                 sshagent(['tomcat-dev']) {
-                    sh "scp -o StrictHostKeyChecking=no service.yml node-app-pod.yml jenkins@localhost:/var/lib/jenkins/node-app/" 
+                    sh "scp -o StrictHostKeyChecking=no services.yml node-app-pod.yml jenkins@localhost:/var/lib/jenkins/node-app/" 
                     script{
                         try{
                             sh "ssh jenkins@localhost:/var/lib/jenkins/node-app/ kubectl apply -f ."
