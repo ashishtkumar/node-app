@@ -2,50 +2,50 @@ pipeline {
     agent any
     environment{
         DOCKER_TAG = getDockerTag()
-        // NEXUS_URL  = "172.31.34.232:8080"
-        // IMAGE_URL_WITH_TAG = "${NEXUS_URL}/node-app:${DOCKER_TAG}"
+        NEXUS_URL  = "localhost:8082"
+        IMAGE_URL_WITH_TAG = "${NEXUS_URL}/node-app:${DOCKER_TAG}"
     }
     stages{
         stage('Build Docker Image'){
             steps{
-                sh "docker build . -t ashishvkumar/nodeapp:${DOCKER_TAG}"
-                // sh "docker build . -t ${IMAGE_URL_WITH_TAG}"
+                // sh "docker build . -t ashishvkumar/nodeapp:${DOCKER_TAG}"
+                sh "docker build . -t ${IMAGE_URL_WITH_TAG}"
             }
         }
-        stage('Docker push'){
-            steps{
-                withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhubPwd')]) {
-                    sh "docker login -u ashishvkumar -p${dockerhubPwd}"
-                }
-                sh "docker push ashishvkumar/nodeapp:${DOCKER_TAG}"
-            }
-            
-        }
-        stage('Deploy to K8S'){
-            steps{
-                sh "chmod +x changeTag.sh"
-                sh "./changeTag.sh ${DOCKER_TAG}"
-                sshagent(['tomcat-dev']) {
-                    sh "scp -o StrictHostKeyChecking=no services.yml node-app-pod.yml jenkins@localhost:/var/lib/jenkins/node-app/" 
-                    script{
-                        try{
-                            sh "ssh jenkins@localhost 'kubectl apply -f node-app/'"
-                        }catch(error){
-                            sh "ssh jenkins@localhost 'kubectl create -f node-app/'"
-                        }
-                    }
-                }
-            }
-
-        }
-        // stage('Nexus Push'){
+        // stage('Docker push'){
         //     steps{
-        //         withCredentials([string(credentialsId: 'nexus-pwd', variable: 'nexusPwd')]) {
-        //             sh "docker login -u admin -p ${nexusPwd} ${NEXUS_URL}"
-        //             sh "docker push ${IMAGE_URL_WITH_TAG}"
+        //         withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhubPwd')]) {
+        //             sh "docker login -u ashishvkumar -p${dockerhubPwd}"
+        //         }
+        //         sh "docker push ashishvkumar/nodeapp:${DOCKER_TAG}"
+        //     }
+            
+        // }
+        // stage('Deploy to K8S'){
+        //     steps{
+        //         sh "chmod +x changeTag.sh"
+        //         sh "./changeTag.sh ${DOCKER_TAG}"
+        //         sshagent(['tomcat-dev']) {
+        //             sh "scp -o StrictHostKeyChecking=no services.yml node-app-pod.yml jenkins@localhost:/var/lib/jenkins/node-app/" 
+        //             script{
+        //                 try{
+        //                     sh "ssh jenkins@localhost 'kubectl apply -f node-app/'"
+        //                 }catch(error){
+        //                     sh "ssh jenkins@localhost 'kubectl create -f node-app/'"
+        //                 }
+        //             }
         //         }
         //     }
+
         // }
+        stage('Nexus Push'){
+            steps{
+                withCredentials([string(credentialsId: 'nexus-pwd', variable: 'nexusPwd')]) {
+                    sh "docker login -u admin -p ${nexusPwd} ${NEXUS_URL}"
+                    sh "docker push ${IMAGE_URL_WITH_TAG}"
+                }
+            }
+        }
         // stage('Docker Deploy Dev'){
         //     steps{
         //         sshagent(['tomcat-dev']) {
