@@ -59,7 +59,7 @@ pipeline {
                     }
 				    // Remove existing container, if container name does not exists still proceed with the build
                     sh script: "ssh jenkins@localhost docker rm -f nodeapp",  returnStatus: true
-                    sh "ssh jenkins@localhost docker run -d -p 8080:8080 --name nodeapp ${IMAGE_URL_WITH_TAG}"
+                    sh "ssh jenkins@localhost docker run -d -p 8085:8080 --name nodeapp ${IMAGE_URL_WITH_TAG}"
                 }
             }
         }
