@@ -16,14 +16,14 @@ pipeline {
         }
     
     
-        // stage('Docker push'){
-        //     steps{
-        //         withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhubPwd')]) {
-        //             sh "docker login -u ashishvkumar -p${dockerhubPwd}"
-        //         }
-        //         sh "docker push ashishvkumar/nodeapp:${DOCKER_TAG}"
-        //     }
-        // }
+        stage('Docker push'){
+            steps{
+                withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhubPwd')]) {
+                    sh "docker login -u ashishvkumar -p${dockerhubPwd}"
+                }
+                sh "docker push ashishvkumar/nodeapp:${DOCKER_TAG}"
+            }
+        }
     
         stage('Nexus Push'){
             steps{
@@ -34,22 +34,22 @@ pipeline {
             }
         }
     
-        // stage('Deploy to K8S'){
-        //     steps{
-        //         sh "chmod +x changeTag.sh"
-        //         sh "./changeTag.sh ${DOCKER_TAG}"
-        //         sshagent(['tomcat-dev']) {
-        //             sh "scp -o StrictHostKeyChecking=no services.yml node-app-pod.yml jenkins@localhost:/var/lib/jenkins/node-app/" 
-        //             script{
-        //                 try{
-        //                     sh "ssh jenkins@localhost 'kubectl apply -f node-app/'"
-        //                 }catch(error){
-        //                     sh "ssh jenkins@localhost 'kubectl create -f node-app/'"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Deploy to K8S'){
+            steps{
+                sh "chmod +x changeTag.sh"
+                sh "./changeTag.sh ${DOCKER_TAG}"
+                sshagent(['tomcat-dev']) {
+                    sh "scp -o StrictHostKeyChecking=no services.yml node-app-pod.yml jenkins@localhost:/var/lib/jenkins/node-app/" 
+                    script{
+                        try{
+                            sh "ssh jenkins@localhost 'kubectl apply -f node-app/'"
+                        }catch(error){
+                            sh "ssh jenkins@localhost 'kubectl create -f node-app/'"
+                        }
+                    }
+                }
+            }
+        }
     
         stage('Docker Deploy Dev'){
             steps{
