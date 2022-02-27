@@ -5,6 +5,7 @@ pipeline {
         DOCKER_TAG = getDockerTag()
         NEXUS_URL  = "localhost:8082"
         IMAGE_URL_WITH_TAG = "${NEXUS_URL}/node-app:${DOCKER_TAG}"
+        IMAGE_WITH_DOCKER_TAG = "ashishvkumar/nodeapp:${DOCKER_TAG}"
     }
     
     stages{
@@ -12,7 +13,7 @@ pipeline {
             steps{
                 // sh "docker build . -t ashishvkumar/nodeapp:${DOCKER_TAG}"
                 sh "docker build . -t ${IMAGE_URL_WITH_TAG}"
-                sh "docker tag ${IMAGE_URL_WITH_TAG} ashishvkumar/nodeapp:${DOCKER_TAG}"
+                sh "docker tag ${IMAGE_URL_WITH_TAG} ${IMAGE_WITH_DOCKER_TAG}"
             }
         }
     
