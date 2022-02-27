@@ -16,8 +16,13 @@ pipeline {
                 sh "docker tag ${IMAGE_URL_WITH_TAG} ${IMAGE_WITH_DOCKER_TAG}"
             }
         }
-    
-    
+
+        stage('Tag Docker Image'){
+            steps{
+                sh "docker tag ${IMAGE_URL_WITH_TAG} ${IMAGE_WITH_DOCKER_TAG}"
+            }
+        }
+       
         stage('Docker push'){
             steps{
                 withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhubPwd')]) {
