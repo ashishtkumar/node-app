@@ -19,7 +19,7 @@ pipeline {
 
         stage('Tag Docker Image'){
             steps{
-		sh "echo ${IMAGE_WITH_DOCKER_TAG}" 
+		sh "echo TESTING" 
                 sh "docker tag ${IMAGE_URL_WITH_TAG} ${IMAGE_WITH_DOCKER_TAG}"
             }
         }
