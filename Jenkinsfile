@@ -12,7 +12,7 @@ pipeline {
         stage('Build Docker Image'){
             steps{
                 // sh "docker build . -t ashishvkumar/nodeapp:${DOCKER_TAG}"
-                sh "docker build . -t ${IMAGE_URL_WITH_TAG}"
+		    sh "docker build . -t ${IMAGE_URL_WITH_TAG} -t ${IMAGE_WITH_DOCKER_TAG}"
                 // sh "docker tag ${IMAGE_URL_WITH_TAG} ${IMAGE_WITH_DOCKER_TAG}"
             }
         }
