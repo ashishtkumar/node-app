@@ -3,7 +3,7 @@ pipeline {
     
     environment{
         DOCKER_TAG = getDockerTag()
-        NEXUS_URL  = "localhost:8081"
+        NEXUS_URL  = "http://localhost:8081"
         IMAGE_URL_WITH_TAG = "${NEXUS_URL}/node-app:${DOCKER_TAG}"
         IMAGE_WITH_DOCKER_TAG = "ashishvkumar/nodeapp:${DOCKER_TAG}"
     }
