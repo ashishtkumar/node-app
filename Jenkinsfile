@@ -3,7 +3,7 @@ pipeline {
     
     environment{
         DOCKER_TAG = getDockerTag()
-        NEXUS_URL  = "localhost:8082"
+        NEXUS_URL  = "localhost:8081"
         IMAGE_URL_WITH_TAG = "${NEXUS_URL}/node-app:${DOCKER_TAG}"
         IMAGE_WITH_DOCKER_TAG = "ashishvkumar/nodeapp:${DOCKER_TAG}"
     }
@@ -34,7 +34,7 @@ pipeline {
     
         stage('Nexus Push'){
             steps{
-                withCredentials([string(credentialsId: 'nexus3', variable: 'nexusPwd')]) {
+                withCredentials([string(credentialsId: 'nexus-pwd', variable: 'nexusPwd')]) {
                     sh "docker login -u admin -p ${nexusPwd} ${NEXUS_URL}"
                     sh "docker push ${IMAGE_URL_WITH_TAG}"
                 }
